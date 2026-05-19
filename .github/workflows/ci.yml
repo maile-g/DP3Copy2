@@ -4,6 +4,9 @@ name: CI
     branches:
       - master
   workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
 jobs:
   build-dita:
     name: Build DITA
@@ -31,11 +34,11 @@ jobs:
           # -- build: | 
             #  dita -i dita/document.ditamap -o out/html -f html5 --filter=myfilter.ditaval
       - name: Deploy HTML 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: JamesIves/github-pages-deploy-action@v4.6.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: out/html # The folder the action should deploy.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: out/html
       - name: Build PDF 🖨️
         uses: dita-ot/dita-ot-action@4.4
         with:
@@ -49,7 +52,7 @@ jobs:
             fox.jason.prismjs
           build: |
               dita -i dita/document.ditamap -o out/pdf -f pdf --theme=.github/themes/theme.yaml --org.dita.index.skip="yes"
-         # If you have a DITAVal, replace the previous line with the following:
+          # If you have a DITAVal, replace the previous line with the following:
             # dita -i dita/document.ditamap -o out/pdf -f pdf --theme=.github/themes/theme.yaml --org.dita.index.skip="yes" --filter=myfilter.ditaval
       - name: Upload PDF 📚
         uses: actions/upload-artifact@v4
